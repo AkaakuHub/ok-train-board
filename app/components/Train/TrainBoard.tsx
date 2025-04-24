@@ -1,0 +1,154 @@
+import { useMemo } from "react";
+import type { DisplayTrain } from "~/types/api";
+import { CircleLoader } from "../UI/CircleLoader";
+import { TrainRow } from "./TrainRow";
+
+interface TrainBoardProps {
+  trains: DisplayTrain[];
+  maxDisplayCount?: number;
+  title?: string;
+  updatedAt?: string;
+  onRefresh?: () => void;
+  isRefreshing?: boolean;
+  cooldownProgress?: number;
+  showControls?: boolean; // 制御要素を表示するか
+  showFooter?: boolean; // フッター情報を表示するか
+}
+
+export const TrainBoard: React.FC<
+  TrainBoardProps & {
+    autoRefresh?: boolean;
+    onToggleAutoRefresh?: () => void;
+  }
+> = ({
+  trains,
+  maxDisplayCount = 5,
+  title = "到着予定",
+  updatedAt,
+  onRefresh,
+  isRefreshing = false,
+  cooldownProgress = 100,
+  autoRefresh = false,
+  onToggleAutoRefresh,
+  showControls = true, // デフォルトは表示する
+  showFooter = true, // デフォルトは表示する
+}) => {
+  // 時刻でソート
+  const sorted = useMemo(() => {
+    return [...trains].sort((a, b) => {
+      return a.time.localeCompare(b.time);
+    });
+  }, [trains]);
+
+  const toDisplay = sorted.slice(0, maxDisplayCount);
+
+  return (
+    <div className="bg-slate-900/90 backdrop-blur-md text-white rounded-xl overflow-hidden ring-1 ring-cyan-500/30 shadow-lg shadow-cyan-900/20 w-full">
+      {/* ヘッダー（モダンなネオン発光ヘッダー） */}
+      <div className="relative bg-gradient-to-r from-slate-800 to-slate-900 px-2 py-3 border-b border-cyan-500/30">
+        <div className="flex justify-between items-center">
+          <div className="flex items-center space-x-2">
+            <div className="w-2 h-6 bg-cyan-400 rounded-full animate-pulse"></div>
+            <h3 className="text-sm font-bold tracking-wider uppercase text-white/90">
+              {title}
+            </h3>
+          </div>
+
+          {/* 更新コントロール - showControlsがtrueの場合のみ表示 */}
+          {showControls && (
+            <div className="flex items-center space-x-2">
+              {/* 自動更新トグル */}
+              {onToggleAutoRefresh && (
+                <div
+                  onClick={onToggleAutoRefresh}
+                  className={`flex items-center space-x-1 text-xs px-2 py-1 rounded cursor-pointer transition-colors ${
+                    autoRefresh
+                      ? "bg-cyan-500/30 text-cyan-200"
+                      : "bg-slate-700/30 text-slate-400 hover:bg-slate-700/40"
+                  }`}
+                >
+                  <span>自動</span>
+                  <div
+                    className={`relative w-8 h-4 rounded-full transition-colors ${
+                      autoRefresh ? "bg-cyan-600" : "bg-slate-700"
+                    }`}
+                  >
+                    <div
+                      className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-transform ${
+                        autoRefresh
+                          ? "bg-cyan-200 transform translate-x-4"
+                          : "bg-slate-400"
+                      }`}
+                    ></div>
+                  </div>
+                </div>
+              )}
+
+              {/* 更新ボタン */}
+              {onRefresh && (
+                <div className="flex items-center space-x-1.5">
+                  <span className="text-xs text-cyan-300/70">更新</span>
+                  <button
+                    onClick={onRefresh}
+                    disabled={isRefreshing || cooldownProgress < 100}
+                    className={`relative flex items-center justify-center p-1 rounded-full transition-all
+                      ${
+                        cooldownProgress < 100
+                          ? "opacity-70 cursor-not-allowed"
+                          : "hover:bg-cyan-500/20 active:bg-cyan-600/30"
+                      }`}
+                    title={
+                      cooldownProgress < 100
+                        ? "更新まで少々お待ちください"
+                        : "今すぐ更新"
+                    }
+                  >
+                    <CircleLoader
+                      progress={cooldownProgress}
+                      isActive={cooldownProgress < 100}
+                      size={32}
+                      remainingSeconds={10 - (10 * cooldownProgress) / 100}
+                    />
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="grid grid-cols-[4rem_3.5rem_1fr_3rem_auto] gap-1 mt-2 text-xs font-medium text-cyan-300/70">
+          <div className="text-center">時刻</div>
+          <div className="text-center">種別</div>
+          <div className="text-center">行先</div>
+          <div className="text-center">備考</div>
+        </div>
+      </div>
+
+      <div className="backdrop-blur-md bg-gradient-to-b from-slate-900/90 to-slate-800/90 relative">
+        {/* 行データ */}
+        <div className="relative">
+          {toDisplay.length === 0 ? (
+            <div className="text-center text-slate-400 py-8">
+              列車はありません
+            </div>
+          ) : (
+            toDisplay.map((train) => <TrainRow key={train.id} train={train} />)
+          )}
+        </div>
+      </div>
+
+      {/* フッター - showFooterがtrueの場合のみ表示 */}
+      {showFooter && updatedAt && (
+        <div className="bg-slate-800/80 text-right text-xs text-slate-400 px-2 py-2 backdrop-blur-sm border-t border-slate-700/30">
+          <div className="flex justify-between items-center">
+            <div className="text-xs text-slate-400/70">
+              <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-ping mr-1.5"></span>
+              OK TRAIN
+            </div>
+            <div>データ最終更新: {updatedAt}</div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+};
