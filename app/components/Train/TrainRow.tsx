@@ -6,11 +6,14 @@ const trainTypeClasses: Record<string, string> = {
   特急: "bg-gradient-to-br from-red-600 to-red-700 text-white shadow-md",
   急行: "bg-gradient-to-br from-emerald-600 to-emerald-700 text-white shadow-md",
   区間急行:
-    "bg-gradient-to-br from-yellow-400 to-yellow-500 text-black shadow-md",
+    "bg-gradient-to-br from-yellow-500 to-yellow-600 text-white shadow-md",
   快速: "bg-gradient-to-br from-blue-800 to-blue-900 text-white shadow-md",
-  各駅停車: "bg-gradient-to-br from-gray-600 to-gray-700 text-white shadow-md",
+  各駅停車: "bg-gradient-to-br from-gray-500 to-gray-600 text-white shadow-md",
   京王ライナー:
     "bg-gradient-to-br from-pink-700 to-pink-800 text-white shadow-md",
+  "Mt.TAKAO":
+    "bg-gradient-to-br from-green-500 to-green-600 text-white shadow-md",
+  臨時: "bg-gradient-to-br from-gray-700 to-gray-800 text-white shadow-md",
 };
 
 interface TrainRowProps {
@@ -22,7 +25,7 @@ export const TrainRow: React.FC<TrainRowProps> = ({ train }) => {
     trainTypeClasses[train.trainType] ||
     "bg-gradient-to-br from-blue-600 to-blue-700 text-white shadow-md";
   return (
-    <div className="grid grid-cols-[4rem_3.5rem_1fr_3rem_auto] gap-1 items-center py-2 px-2 border-b border-slate-700/50 hover:bg-slate-800/30 transition-colors">
+    <div className="grid grid-cols-[4rem_6rem_1fr_3rem_auto] gap-1 items-center py-2 px-2 border-b border-slate-700/50 hover:bg-slate-800/30 transition-colors">
       <div
         className={clsx(
           "text-center text-lg font-mono tabular-nums font-semibold",
@@ -34,7 +37,7 @@ export const TrainRow: React.FC<TrainRowProps> = ({ train }) => {
       <div
         className={`${typeClass} rounded-md px-1 py-1 text-center text-sm font-bold tracking-wider backdrop-blur-sm ring-1 ring-white/10`}
       >
-        {train.iconName}
+        {train.trainType}
       </div>
       <div className="text-base font-semibold tracking-wide text-white/90 text-center mx-auto truncate">
         {train.destination}
