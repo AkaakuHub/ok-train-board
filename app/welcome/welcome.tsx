@@ -225,7 +225,7 @@ export const TrainBoardContainer: React.FC = () => {
   if (loading) {
     return (
       <div className="bg-slate-900/80 backdrop-blur-sm text-cyan-300 p-6 rounded-xl flex flex-col items-center justify-center shadow-lg ring-1 ring-cyan-500/30">
-        <div className="w-12 h-12 mb-4 animate-pulse rounded-full bg-gradient-to-r from-cyan-500 to-cyan-700 shadow-lg shadow-cyan-900/20" />
+        <div className="w-12 h-12 mb-4 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-700 shadow-lg shadow-cyan-900/20" />
         <div className="text-lg">データ読み込み中...</div>
       </div>
     );
@@ -256,7 +256,7 @@ export const TrainBoardContainer: React.FC = () => {
       <div className="bg-slate-900/80 backdrop-blur-sm p-2 rounded-lg ring-1 ring-cyan-500/20 shadow-md">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 px-2">
           <div className="text-sm text-cyan-400 font-medium flex items-center gap-2">
-            <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+            <span className="inline-block w-2 h-2 rounded-full bg-cyan-400"></span>
             <span>リアルタイム列車情報</span>
           </div>
 

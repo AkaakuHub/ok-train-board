@@ -69,10 +69,10 @@ export const CircleLoader: React.FC<CircleLoaderProps> = ({
         />
       </svg>
       {/* 中央表示（クールダウン中は残り秒数、それ以外はアイコン） */}
-      <div className="absolute inset-0 flex items-center justify-center">
+      <div className="text-white absolute inset-0 flex items-center justify-center">
         {isActive && remainingSeconds > 0 ? (
           // クールダウン中は残り秒数
-          <span className="text-white font-mono text-xs font-bold">
+          <span className="font-mono text-xs font-bold">
             {Math.ceil(remainingSeconds)}
           </span>
         ) : (

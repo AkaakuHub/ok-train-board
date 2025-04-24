@@ -48,7 +48,7 @@ export const TrainBoard: React.FC<
       <div className="relative bg-gradient-to-r from-slate-800 to-slate-900 px-2 py-3 border-b border-cyan-500/30">
         <div className="flex justify-between items-center">
           <div className="flex items-center space-x-2">
-            <div className="w-2 h-6 bg-cyan-400 rounded-full animate-pulse"></div>
+            <div className="w-2 h-6 bg-cyan-400 rounded-full"></div>
             <h3 className="text-sm font-bold tracking-wider uppercase text-white/90">
               {title}
             </h3>
@@ -142,7 +142,7 @@ export const TrainBoard: React.FC<
         <div className="bg-slate-800/80 text-right text-xs text-slate-400 px-2 py-2 backdrop-blur-sm border-t border-slate-700/30">
           <div className="flex justify-between items-center">
             <div className="text-xs text-slate-400/70">
-              <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 animate-ping mr-1.5"></span>
+              <span className="inline-block w-2 h-2 rounded-full bg-cyan-400 mr-1.5"></span>
               OK TRAIN
             </div>
             <div>データ最終更新: {updatedAt}</div>

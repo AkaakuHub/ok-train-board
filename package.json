@@ -7,7 +7,7 @@
 		"cf-typegen": "wrangler types",
 		"deploy": "pnpm run build && wrangler deploy",
 		"dev": "react-router dev",
-		"preview": "pnpm run build && vite preview",
+		"preview": "vite preview --port 5173 --host",
 		"typecheck": "npm run cf-typegen && react-router typegen && tsc -b"
 	},
 	"dependencies": {
