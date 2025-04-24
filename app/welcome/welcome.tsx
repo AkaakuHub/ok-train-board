@@ -373,7 +373,7 @@ export const TrainBoardContainer: React.FC = () => {
     );
   }, [displayTrains]);
 
-  // API呼び出し関数
+  // API呼び出し関数（変更なし）
   const fetchData = useCallback(async (isRefresh = false) => {
     if (isRefresh) {
       setIsRefreshing(true);
@@ -416,40 +416,6 @@ export const TrainBoardContainer: React.FC = () => {
     }
   }, []);
 
-  // 自動更新のトグル
-  const toggleAutoRefresh = useCallback(() => {
-    setAutoRefresh((prev) => !prev);
-  }, []);
-
-  // 自動更新の制御
-  useEffect(() => {
-    if (autoRefresh) {
-      // 自動更新がONの場合、10秒ごとに更新
-      autoRefreshTimerRef.current = setInterval(() => {
-        fetchData(true);
-      }, 10000);
-    } else {
-      // 自動更新がOFFの場合、タイマーをクリア
-      if (autoRefreshTimerRef.current) {
-        clearInterval(autoRefreshTimerRef.current);
-        autoRefreshTimerRef.current = null;
-      }
-    }
-
-    return () => {
-      if (autoRefreshTimerRef.current) {
-        clearInterval(autoRefreshTimerRef.current);
-        autoRefreshTimerRef.current = null;
-      }
-    };
-  }, [autoRefresh, fetchData]);
-
-  // 手動リフレッシュハンドラー
-  const handleRefresh = useCallback(() => {
-    if (cooldown > 0) return; // クールダウン中は何もしない
-    fetchData(true);
-  }, [fetchData, cooldown]);
-
   // クールダウンタイマー制御
   const startCooldown = useCallback(() => {
     setCooldown(cooldownTotal);
@@ -457,6 +423,7 @@ export const TrainBoardContainer: React.FC = () => {
     // 既存のタイマーをクリア
     if (cooldownTimerRef.current) {
       clearInterval(cooldownTimerRef.current);
+      cooldownTimerRef.current = null;
     }
 
     // 新しいタイマーを設定（100msごとに更新）
@@ -473,19 +440,76 @@ export const TrainBoardContainer: React.FC = () => {
         return next;
       });
     }, 100);
-  }, [cooldownTotal]);
+  }, [cooldownTotal, autoRefresh, fetchData]);
 
-  // 初回ロード
+  // 自動更新のトグル
+  const toggleAutoRefresh = useCallback(() => {
+    setAutoRefresh((prev) => {
+      const newValue = !prev;
+
+      if (newValue) {
+        // クールダウン中かどうかをチェック
+        if (cooldown <= 0) {
+          // クールダウン中でなければ即時更新
+          fetchData(true);
+        }
+      } else {
+        // 自動更新をOFFにする場合、自動更新用のタイマークリア
+        // ただし、クールダウン自体は停止しない（進行中の更新は完了させる）
+        if (autoRefreshTimerRef.current) {
+          clearTimeout(autoRefreshTimerRef.current);
+          autoRefreshTimerRef.current = null;
+        }
+      }
+
+      return newValue;
+    });
+  }, [fetchData, cooldown]);
+
+  // 自動更新の制御 
   useEffect(() => {
-    let ignore = false;
+    // 自動更新タイマーのクリーンアップ
+    if (autoRefreshTimerRef.current) {
+      clearTimeout(autoRefreshTimerRef.current);
+      autoRefreshTimerRef.current = null;
+    }
 
-    fetchData();
+    // 注: 自動更新の実際の実行ロジックはstartCooldown内に移動
+    // ここでは最初の一回だけ強制的に実行（ただしクールダウン中は無視）
+    if (autoRefresh && cooldown <= 0 && !isRefreshing) {
+      // 初回のみ少し遅延させて実行（状態が安定するまで）
+      autoRefreshTimerRef.current = setTimeout(() => {
+        fetchData(true);
+      }, 10);
+    }
 
-    // クリーンアップ関数
     return () => {
-      ignore = true;
+      if (autoRefreshTimerRef.current) {
+        clearTimeout(autoRefreshTimerRef.current);
+        autoRefreshTimerRef.current = null;
+      }
+    };
+  }, [autoRefresh, cooldown, isRefreshing, fetchData]);
+
+  // 手動リフレッシュハンドラー
+  const handleRefresh = useCallback(() => {
+    if (cooldown > 0) return;
+    fetchData(true);
+  }, [fetchData, cooldown]);
+
+  // コンポーネントアンマウント時のクリーンアップ
+  useEffect(() => {
+    fetchData();
+    return () => {
+      // すべてのタイマーを確実に停止
       if (cooldownTimerRef.current) {
         clearInterval(cooldownTimerRef.current);
+        cooldownTimerRef.current = null;
+      }
+
+      if (autoRefreshTimerRef.current) {
+        clearInterval(autoRefreshTimerRef.current);
+        autoRefreshTimerRef.current = null;
       }
     };
   }, [fetchData]);
