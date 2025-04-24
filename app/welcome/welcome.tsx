@@ -344,7 +344,9 @@ export const TrainBoardContainer: React.FC = () => {
     [cooldown]
   );
   const cooldownTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const autoRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const autoRefreshTimerRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
+  );
 
   // 表示用のデータに変換
   const displayTrains = useMemo(() => {
@@ -641,7 +643,11 @@ export const TrainBoardContainer: React.FC = () => {
  * Welcome コンポーネントも修正して、レイアウトを調整
  */
 export function Welcome() {
-  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTime, setCurrentTime] = useState<Date | null>(null);
+
+  useEffect(() => {
+    setCurrentTime(new Date());
+  }, []);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -649,7 +655,7 @@ export function Welcome() {
     }, 1000); // 1秒ごとに更新
 
     return () => clearInterval(interval);
-  }, []); // 依存配列の修正
+  }, []);
 
   return (
     <main className="flex flex-col items-center pt-6 pb-4 min-h-screen bg-gradient-to-b from-slate-950 to-slate-900">
@@ -667,7 +673,7 @@ export function Welcome() {
             <div className="text-xs flex items-center bg-cyan-950/30 px-2 py-1 gap-2 rounded-md border border-cyan-800/20">
               <FaRegClock size={12} />
               <span className="w-12">
-                {currentTime.toLocaleTimeString("ja-JP")}
+                {currentTime?.toLocaleTimeString("ja-JP")}
               </span>
             </div>
           </div>
