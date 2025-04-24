@@ -1,17 +1,23 @@
+import { Welcome } from "~/welcome/welcome";
 import type { Route } from "./+types/home";
-import { Welcome } from "../welcome/welcome";
 
 export function meta({}: Route.MetaArgs) {
   return [
-    { title: "New React Router App" },
-    { name: "description", content: "Welcome to React Router!" },
+    { title: "OK-TRAIN 電光掲示板" },
+    { name: "description", content: "Welcome to the 電光掲示板!" },
+    { name: "twitter:card", content: "summary" },
+    { name: "twitter:title", content: "OK-TRAIN 電光掲示板" },
+    { name: "twitter:description", content: "Welcome to the 電光掲示板!" },
+    { name: "twitter:image", content: "/images/ogp.webp" },
+    { name: "og:title", content: "OK-TRAIN 電光掲示板" },
+    { name: "og:description", content: "Welcome to the 電光掲示板!" },
+    { name: "og:image", content: "/images/ogp.webp" },
+    { name: "og:url", content: "/" },
+    { name: "og:type", content: "website" },
+    { name: "og:site_name", content: "OK-TRAIN 電光掲示板" },
   ];
 }
 
-export function loader({ context }: Route.LoaderArgs) {
-  return { message: context.cloudflare.env.VALUE_FROM_CLOUDFLARE };
-}
-
-export default function Home({ loaderData }: Route.ComponentProps) {
-  return <Welcome message={loaderData.message} />;
+export default function Home() {
+  return <Welcome />;
 }

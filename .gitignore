@@ -11,3 +11,8 @@
 .wrangler
 .dev.vars*
 
+/swagger.json
+/assets*
+
+.env*
+!.env.example
