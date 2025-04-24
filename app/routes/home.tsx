@@ -6,7 +6,7 @@ export function meta({}: Route.MetaArgs) {
   return [
     { title: "OK-TRAIN 電光掲示板" },
     { name: "description", content: "Welcome to the 電光掲示板!" },
-    { name: "twitter:card", content: "summary" },
+    { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: "OK-TRAIN 電光掲示板" },
     { name: "twitter:description", content: "Welcome to the 電光掲示板!" },
     { name: "twitter:image", content: `${VITE_BASE_URL}/images/ogp.webp` },
