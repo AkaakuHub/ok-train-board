@@ -582,11 +582,11 @@ export const TrainBoardContainer: React.FC = () => {
             <button
               onClick={handleRefresh}
               disabled={isRefreshing || cooldownProgress < 100}
-              className={`relative flex items-center justify-center gap-2 px-3 py-1 rounded-md transition-all text-cyan-300 text-sm
+              className={`relative flex items-center justify-center p-1 rounded-full transition-all
                 ${
                   cooldownProgress < 100
-                    ? "bg-slate-800/50 opacity-70 cursor-not-allowed"
-                    : "bg-slate-800/50 hover:bg-slate-700/60 active:bg-slate-600/60"
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-cyan-500/20 active:bg-cyan-600/30"
                 }`}
               title={
                 cooldownProgress < 100
@@ -594,13 +594,12 @@ export const TrainBoardContainer: React.FC = () => {
                   : "今すぐ更新"
               }
             >
-              <TfiReload size={14} />
-              <span>更新</span>
-              {cooldownProgress < 100 && (
-                <span className="text-xs text-cyan-400/70">
-                  {Math.ceil(10 - (10 * cooldownProgress) / 100)}秒
-                </span>
-              )}
+              <CircleLoader
+                progress={cooldownProgress}
+                isActive={cooldownProgress < 100}
+                size={32}
+                remainingSeconds={10 - (10 * cooldownProgress) / 100}
+              />
             </button>
           </div>
         </div>
