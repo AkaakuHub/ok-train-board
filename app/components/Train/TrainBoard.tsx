@@ -33,12 +33,12 @@ export const TrainBoard: React.FC<
   showControls = true, // デフォルトは表示する
   showFooter = true, // デフォルトは表示する
 }) => {
-  // 時刻だけでソートすると同じ時間の違う車種がチラチラ入れ替わるので、時刻と車種でソートする
+  // 時刻だけでソートすると同じ時間の違う車種がチラチlocaleラ入れ替わるので、時刻と車種でソートする
   const sorted = useMemo(() => {
     return trains.slice().sort((a, b) => {
-      const timeA = new Date(a.time).getTime();
-      const timeB = new Date(b.time).getTime();
-      if (timeA !== timeB) return timeA - timeB;
+      const timeA = a.time;
+      const timeB = b.time;
+      if (timeA !== timeB) return timeA.localeCompare(timeB);
       return a.trainType.localeCompare(b.trainType);
     });
   }, [trains]);
