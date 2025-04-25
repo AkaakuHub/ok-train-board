@@ -5,23 +5,46 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLocation,
 } from "react-router";
+import { useEffect } from "react";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 
-export const links: Route.LinksFunction = () => [
-  { rel: "preconnect", href: "https://fonts.googleapis.com" },
-  {
-    rel: "preconnect",
-    href: "https://fonts.gstatic.com",
-    crossOrigin: "anonymous",
-  },
-  {
-    rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
-  },
-];
+// Google Analytics用のスクリプトを生成する関数
+function Analytics() {
+  const location = useLocation();
+  const gaId = import.meta.env.VITE_GTAG;
+
+  useEffect(() => {
+    if (!gaId) return;
+
+    // Google Analyticsスクリプトを動的に挿入
+    const gtagScript = document.createElement("script");
+    gtagScript.async = true;
+    gtagScript.src = `https://www.googletagmanager.com/gtag/js?id=${gaId}`;
+    document.head.appendChild(gtagScript);
+
+    window.dataLayer = window.dataLayer || [];
+    function gtag(...args: any[]) {
+      window.dataLayer.push(arguments);
+    }
+
+    gtag("js", new Date());
+    gtag("config", gaId);
+
+    // ページ遷移時にGoogle Analyticsにページビューを送信
+    gtag("config", gaId, { page_path: location.pathname });
+
+    // クリーンアップ関数
+    return () => {
+      document.head.removeChild(gtagScript);
+    };
+  }, [gaId, location]);
+
+  return null;
+}
 
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
@@ -54,6 +77,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         {children}
         <ScrollRestoration />
         <Scripts />
+        <Analytics />
       </body>
     </html>
   );
