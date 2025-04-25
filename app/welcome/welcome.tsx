@@ -395,13 +395,13 @@ export function Welcome() {
         <div className="flex items-center justify-between border-b border-cyan-500/30 pb-3">
           <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-white group flex items-center">
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 to-cyan-500">
-              調布駅 電光掲示板
+              調布駅 電光掲示板（β版）
             </span>
           </h2>
 
           <div className="flex items-center space-x-1 text-cyan-500/70">
             {/* 現在時刻 */}
-            <div className="text-xs flex items-center bg-cyan-950/30 px-2 py-1 gap-2 rounded-md border border-cyan-800/20">
+            <div className="text-sm flex items-center bg-cyan-950/30 px-2 py-1 gap-2 rounded-md border border-cyan-800/20">
               <FaRegClock size={12} />
               <span className="w-12">
                 {currentTime?.toLocaleTimeString("ja-JP")}
