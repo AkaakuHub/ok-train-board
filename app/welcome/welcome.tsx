@@ -101,7 +101,7 @@ export const TrainBoardContainer: React.FC = () => {
     try {
       // 指定URLでAPIから到着列車データを取得
       const response = await fetch(
-        `${API_URL}/trains/arrivals/%E8%AA%BF%E5%B8%83`
+        `${API_URL}/trains/arrivals/調布`
       );
 
       if (!response.ok) {
