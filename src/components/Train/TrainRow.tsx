@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import type { DisplayTrain } from "~/types/api";
+import type { DisplayTrain } from "@/types/api";
 
 // 列車種別ごとのカラーマッピング
 const trainTypeClasses: Record<string, string> = {

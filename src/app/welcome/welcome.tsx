@@ -1,3 +1,5 @@
+"use client";
+
 import React, {
   useEffect,
   useState,
@@ -7,9 +9,9 @@ import React, {
 } from "react";
 import { FaRegClock } from "react-icons/fa";
 import { MdErrorOutline } from "react-icons/md";
-import { TrainBoard } from "~/components/Train/TrainBoard";
-import { CircleLoader } from "~/components/UI/CircleLoader";
-import type { ArrivalsResponse, ArrivalTrain, DisplayTrain } from "~/types/api";
+import { TrainBoard } from "../../components/Train/TrainBoard";
+import { CircleLoader } from "../../components/UI/CircleLoader";
+import type { ArrivalsResponse, ArrivalTrain, DisplayTrain } from "../../types/api";
 
 /**
  * APIの到着列車データをDisplayTrain型に変換する
@@ -90,7 +92,7 @@ export const TrainBoardContainer: React.FC = () => {
     }
     setError(null);
 
-    const API_URL = import.meta.env.VITE_API_URL;
+    const API_URL = process.env.NEXT_PUBLIC_API_URL;
     if (!API_URL) {
       setError("APIのURLが設定されていません");
       setLoading(false);

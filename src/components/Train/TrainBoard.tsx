@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import type { DisplayTrain } from "~/types/api";
+import type { DisplayTrain } from "@/types/api";
 import { CircleLoader } from "../UI/CircleLoader";
 import { TrainRow } from "./TrainRow";
 
