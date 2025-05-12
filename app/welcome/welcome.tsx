@@ -21,7 +21,7 @@ const convertToDisplayTrains = (data: ArrivalsResponse): DisplayTrain[] => {
 
   return data.arrivingTrains.map((train: ArrivalTrain, index: number) => ({
     id: `${train.trainNumber}-${index}`,
-    time: train.estimatedArrival,
+    time: train.estimatedDeparture,
     trainType: train.type.name,
     iconName: train.type.iconName || train.type.name,
     destination: train.destination.name,
@@ -100,9 +100,7 @@ export const TrainBoardContainer: React.FC = () => {
 
     try {
       // 指定URLでAPIから到着列車データを取得
-      const response = await fetch(
-        `${API_URL}/trains/arrivals/調布`
-      );
+      const response = await fetch(`${API_URL}/trains/arrivals/調布`);
 
       if (!response.ok) {
         throw new Error(`APIエラー: ${response.status}`);
@@ -205,178 +203,182 @@ export const TrainBoardContainer: React.FC = () => {
     fetchData(true);
   }, [fetchData, cooldown]);
 
-  // // コンポーネントアンマウント時のクリーンアップ
-  // useEffect(() => {
-  //   fetchData();
-  //   return () => {
-  //     // すべてのタイマーを確実に停止
-  //     if (cooldownTimerRef.current) {
-  //       clearInterval(cooldownTimerRef.current);
-  //       cooldownTimerRef.current = null;
-  //     }
+  // コンポーネントアンマウント時のクリーンアップ
+  useEffect(() => {
+    fetchData();
+    return () => {
+      // すべてのタイマーを確実に停止
+      if (cooldownTimerRef.current) {
+        clearInterval(cooldownTimerRef.current);
+        cooldownTimerRef.current = null;
+      }
 
-  //     if (autoRefreshTimerRef.current) {
-  //       clearInterval(autoRefreshTimerRef.current);
-  //       autoRefreshTimerRef.current = null;
-  //     }
-  //   };
-  // }, [fetchData]);
+      if (autoRefreshTimerRef.current) {
+        clearInterval(autoRefreshTimerRef.current);
+        autoRefreshTimerRef.current = null;
+      }
+    };
+  }, [fetchData]);
 
-  // if (loading) {
-  //   return (
-  //     <div className="bg-slate-900/80 backdrop-blur-sm text-cyan-300 p-6 rounded-xl flex flex-col items-center justify-center shadow-lg ring-1 ring-cyan-500/30">
-  //       <div className="w-12 h-12 mb-4 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-700 shadow-lg shadow-cyan-900/20" />
-  //       <div className="text-lg">データ読み込み中...</div>
-  //     </div>
-  //   );
-  // }
+  if (loading) {
+    return (
+      <div className="bg-slate-900/80 backdrop-blur-sm text-cyan-300 p-6 rounded-xl flex flex-col items-center justify-center shadow-lg ring-1 ring-cyan-500/30">
+        <div className="w-12 h-12 mb-4 rounded-full bg-gradient-to-r from-cyan-500 to-cyan-700 shadow-lg shadow-cyan-900/20" />
+        <div className="text-lg">データ読み込み中...</div>
+      </div>
+    );
+  }
 
-  // 今直せないからこれで止めて
-  return (
-    <div className="bg-slate-900/80 backdrop-blur-sm text-red-300 p-6 rounded-xl flex flex-col items-center shadow-lg ring-1 ring-red-500/30">
-      <MdErrorOutline size={48} />
-      <button
-        onClick={() => fetchData()}
-        className="mt-4 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-md transition-colors"
-      >
-        現在メンテナンス中です。近日復活します。
-      </button>
-    </div>
-  );
-
-  // if (error) {
-  //   return (
-  //     <div className="bg-slate-900/80 backdrop-blur-sm text-red-300 p-6 rounded-xl flex flex-col items-center shadow-lg ring-1 ring-red-500/30">
-  //       <MdErrorOutline size={48} />
-  //       <div className="text-lg font-medium">{error}</div>
-  //       <button
-  //         onClick={() => fetchData()}
-  //         className="mt-4 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-md transition-colors"
-  //       >
-  //         再試行
-  //       </button>
-  //     </div>
-  //   );
-  // }
-
-  // if (!data) {
-  //   return <div className="text-gray-400 p-4">データがありません</div>;
-  // }
-
+  // // 今直せないからこれで止めて
   // return (
-  //   <div className="flex flex-col gap-6 w-full">
-  //     {/* 共通コントロールパネル */}
-  //     <div className="bg-slate-900/80 backdrop-blur-sm p-2 rounded-lg ring-1 ring-cyan-500/20 shadow-md">
-  //       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 px-2">
-  //         <div className="text-sm text-cyan-400 font-medium flex items-center gap-2">
-  //           <span className="inline-block w-2 h-2 rounded-full bg-cyan-400"></span>
-  //           <span>リアルタイム列車情報</span>
-  //         </div>
-
-  //         <div className="flex flex-wrap items-center gap-2">
-  //           {/* 表示行数コントロール - ドロップダウン形式に変更 */}
-  //           <div className="flex items-center space-x-1 bg-slate-800/50 px-2 py-1 rounded-md">
-  //             <span className="text-xs text-slate-400">表示行数:</span>
-  //             <select
-  //               value={displayCount}
-  //               onChange={(e) => setDisplayCount(Number(e.target.value))}
-  //               className="bg-slate-700 text-cyan-300 text-xs py-1 px-2 rounded border-none outline-none focus:ring-1 focus:ring-cyan-500 appearance-none w-12 text-center"
-  //               style={{
-  //                 WebkitAppearance: "none",
-  //                 backgroundImage:
-  //                   'url(\'data:image/svg+xml;utf8,<svg fill="%238096a7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>\')',
-  //                 backgroundRepeat: "no-repeat",
-  //                 backgroundPosition: "right 2px center",
-  //                 backgroundSize: "16px",
-  //               }}
-  //             >
-  //               {displayCountOptions.map((option) => (
-  //                 <option key={option} value={option}>
-  //                   {option}
-  //                 </option>
-  //               ))}
-  //             </select>
-  //           </div>
-
-  //           {/* 自動更新トグル */}
-  //           <div
-  //             onClick={toggleAutoRefresh}
-  //             className={`flex items-center space-x-1 text-xs px-2 py-1 rounded cursor-pointer transition-colors ${autoRefresh
-  //               ? "bg-cyan-500/30 text-cyan-200"
-  //               : "bg-slate-700/30 text-slate-400 hover:bg-slate-700/40"
-  //               }`}
-  //           >
-  //             <span>自動更新</span>
-  //             <div
-  //               className={`relative w-8 h-4 rounded-full transition-colors ${autoRefresh ? "bg-cyan-600" : "bg-slate-700"
-  //                 }`}
-  //             >
-  //               <div
-  //                 className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-transform ${autoRefresh
-  //                   ? "bg-cyan-200 transform translate-x-4"
-  //                   : "bg-slate-400"
-  //                   }`}
-  //               ></div>
-  //             </div>
-  //           </div>
-
-  //           {/* 更新ボタン */}
-  //           <button
-  //             onClick={handleRefresh}
-  //             disabled={isRefreshing || cooldownProgress < 100}
-  //             className={`relative flex items-center justify-center p-1 rounded-full transition-all
-  //               ${cooldownProgress < 100
-  //                 ? "opacity-70 cursor-not-allowed"
-  //                 : "hover:bg-cyan-500/20 active:bg-cyan-600/30"
-  //               }`}
-  //             title={
-  //               cooldownProgress < 100
-  //                 ? "更新まで少々お待ちください"
-  //                 : "今すぐ更新"
-  //             }
-  //           >
-  //             <CircleLoader
-  //               progress={cooldownProgress}
-  //               isActive={cooldownProgress < 100}
-  //               size={32}
-  //               remainingSeconds={10 - (10 * cooldownProgress) / 100}
-  //             />
-  //           </button>
-  //         </div>
-  //       </div>
-
-  //       {data.updatedAt && (
-  //         <div className="text-right text-xs text-cyan-300/50 mt-1 px-2">
-  //           データ最終更新: {data.updatedAt}
-  //         </div>
-  //       )}
-  //     </div>
-
-  //     {/* 上り電光掲示板 */}
-  //     <div className="w-full">
-  //       <TrainBoard
-  //         trains={inboundTrains}
-  //         maxDisplayCount={displayCount}
-  //         title="上り（新宿・都営新宿線方面）"
-  //         updatedAt={data.updatedAt}
-  //         showControls={false}
-  //         showFooter={false}
-  //       />
-  //     </div>
-
-  //     {/* 下り電光掲示板 */}
-  //     <div className="w-full">
-  //       <TrainBoard
-  //         trains={outboundTrains}
-  //         maxDisplayCount={displayCount}
-  //         title="下り（橋本・高尾・京王八王子方面）"
-  //         updatedAt={data.updatedAt}
-  //         showControls={false}
-  //         showFooter={false}
-  //       />
-  //     </div>
+  //   <div className="bg-slate-900/80 backdrop-blur-sm text-red-300 p-6 rounded-xl flex flex-col items-center shadow-lg ring-1 ring-red-500/30">
+  //     <MdErrorOutline size={48} />
+  //     <button
+  //       onClick={() => fetchData()}
+  //       className="mt-4 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-md transition-colors"
+  //     >
+  //       現在メンテナンス中です。近日復活します。
+  //     </button>
   //   </div>
   // );
+
+  if (error) {
+    return (
+      <div className="bg-slate-900/80 backdrop-blur-sm text-red-300 p-6 rounded-xl flex flex-col items-center shadow-lg ring-1 ring-red-500/30">
+        <MdErrorOutline size={48} />
+        <div className="text-lg font-medium">{error}</div>
+        <button
+          onClick={() => fetchData()}
+          className="mt-4 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-md transition-colors"
+        >
+          再試行
+        </button>
+      </div>
+    );
+  }
+
+  if (!data) {
+    return <div className="text-gray-400 p-4">データがありません</div>;
+  }
+
+  return (
+    <div className="flex flex-col gap-6 w-full">
+      {/* 共通コントロールパネル */}
+      <div className="bg-slate-900/80 backdrop-blur-sm p-2 rounded-lg ring-1 ring-cyan-500/20 shadow-md">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 px-2">
+          <div className="text-sm text-cyan-400 font-medium flex items-center gap-2">
+            <span className="inline-block w-2 h-2 rounded-full bg-cyan-400"></span>
+            <span>リアルタイム列車情報</span>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            {/* 表示行数コントロール - ドロップダウン形式に変更 */}
+            <div className="flex items-center space-x-1 bg-slate-800/50 px-2 py-1 rounded-md">
+              <span className="text-xs text-slate-400">表示行数:</span>
+              <select
+                value={displayCount}
+                onChange={(e) => setDisplayCount(Number(e.target.value))}
+                className="bg-slate-700 text-cyan-300 text-xs py-1 px-2 rounded border-none outline-none focus:ring-1 focus:ring-cyan-500 appearance-none w-12 text-center"
+                style={{
+                  WebkitAppearance: "none",
+                  backgroundImage:
+                    'url(\'data:image/svg+xml;utf8,<svg fill="%238096a7" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>\')',
+                  backgroundRepeat: "no-repeat",
+                  backgroundPosition: "right 2px center",
+                  backgroundSize: "16px",
+                }}
+              >
+                {displayCountOptions.map((option) => (
+                  <option key={option} value={option}>
+                    {option}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            {/* 自動更新トグル */}
+            <div
+              onClick={toggleAutoRefresh}
+              className={`flex items-center space-x-1 text-xs px-2 py-1 rounded cursor-pointer transition-colors ${
+                autoRefresh
+                  ? "bg-cyan-500/30 text-cyan-200"
+                  : "bg-slate-700/30 text-slate-400 hover:bg-slate-700/40"
+              }`}
+            >
+              <span>自動更新</span>
+              <div
+                className={`relative w-8 h-4 rounded-full transition-colors ${
+                  autoRefresh ? "bg-cyan-600" : "bg-slate-700"
+                }`}
+              >
+                <div
+                  className={`absolute top-0.5 left-0.5 w-3 h-3 rounded-full transition-transform ${
+                    autoRefresh
+                      ? "bg-cyan-200 transform translate-x-4"
+                      : "bg-slate-400"
+                  }`}
+                ></div>
+              </div>
+            </div>
+
+            {/* 更新ボタン */}
+            <button
+              onClick={handleRefresh}
+              disabled={isRefreshing || cooldownProgress < 100}
+              className={`relative flex items-center justify-center p-1 rounded-full transition-all
+                ${
+                  cooldownProgress < 100
+                    ? "opacity-70 cursor-not-allowed"
+                    : "hover:bg-cyan-500/20 active:bg-cyan-600/30"
+                }`}
+              title={
+                cooldownProgress < 100
+                  ? "更新まで少々お待ちください"
+                  : "今すぐ更新"
+              }
+            >
+              <CircleLoader
+                progress={cooldownProgress}
+                isActive={cooldownProgress < 100}
+                size={32}
+                remainingSeconds={10 - (10 * cooldownProgress) / 100}
+              />
+            </button>
+          </div>
+        </div>
+
+        {data.updatedAt && (
+          <div className="text-right text-xs text-cyan-300/50 mt-1 px-2">
+            データ最終更新: {data.updatedAt}
+          </div>
+        )}
+      </div>
+
+      {/* 上り電光掲示板 */}
+      <div className="w-full">
+        <TrainBoard
+          trains={inboundTrains}
+          maxDisplayCount={displayCount}
+          title="上り（新宿・都営新宿線方面）"
+          updatedAt={data.updatedAt}
+          showControls={false}
+          showFooter={false}
+        />
+      </div>
+
+      {/* 下り電光掲示板 */}
+      <div className="w-full">
+        <TrainBoard
+          trains={outboundTrains}
+          maxDisplayCount={displayCount}
+          title="下り（橋本・高尾・京王八王子方面）"
+          updatedAt={data.updatedAt}
+          showControls={false}
+          showFooter={false}
+        />
+      </div>
+    </div>
+  );
 };
 
 /**

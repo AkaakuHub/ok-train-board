@@ -32,7 +32,7 @@ export interface ArrivalTrain {
   direction: string;
   destination: Destination;
   delay: number;
-  estimatedArrival: string;
+  estimatedDeparture: string;
   isInStation: boolean;
   passType: string;
   information: string | null;
