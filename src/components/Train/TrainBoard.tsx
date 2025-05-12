@@ -48,8 +48,8 @@ export const TrainBoard: React.FC<
       const [hoursB, minutesB] = timeB.split(":").map(Number);
 
       // 日付の基準を設定（今日）
-      let dateA = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-      let dateB = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const dateA = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+      const dateB = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
       // 深夜時間帯の特殊処理（日付をまたぐケース）
 
