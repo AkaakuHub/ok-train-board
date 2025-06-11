@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 // 列車種別ごとのカラーマッピング
 const trainTypeClasses: Record<string, string> = {

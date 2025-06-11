@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 import type { DisplayTrain } from "@/types/api";
 import { TrainRow } from "@/components/Train/TrainRow";
 

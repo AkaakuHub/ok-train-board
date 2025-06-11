@@ -20,8 +20,14 @@ export const TrainBoardControls: React.FC<TrainBoardControlsProps> = ({
 		<div className="flex items-center space-x-2">
 			{/* 自動更新トグル */}
 			{onToggleAutoRefresh && (
-				<div
+				<button
+					type="button"
 					onClick={onToggleAutoRefresh}
+					onKeyDown={(e) => {
+						if (e.key === "Enter" || e.key === " ") {
+							onToggleAutoRefresh();
+						}
+					}}
 					className={`flex items-center space-x-1 text-xs px-2 py-1 rounded cursor-pointer transition-colors ${
 						autoRefresh
 							? "bg-cyan-500/30 text-cyan-200"
@@ -42,7 +48,7 @@ export const TrainBoardControls: React.FC<TrainBoardControlsProps> = ({
 							}`}
 						/>
 					</div>
-				</div>
+				</button>
 			)}
 
 			{/* 更新ボタン */}
@@ -50,6 +56,7 @@ export const TrainBoardControls: React.FC<TrainBoardControlsProps> = ({
 				<div className="flex items-center space-x-1.5">
 					<span className="text-xs text-cyan-300/70">更新</span>
 					<button
+						type="button"
 						onClick={onRefresh}
 						disabled={isRefreshing || cooldownProgress < 100}
 						className={`relative flex items-center justify-center p-1 rounded-full transition-all

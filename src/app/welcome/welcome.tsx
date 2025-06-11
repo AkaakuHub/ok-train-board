@@ -1,13 +1,7 @@
 "use client";
 
 import type React from "react";
-import {
-	useEffect,
-	useState,
-	useMemo,
-	useRef,
-	useCallback,
-} from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { FaRegClock } from "react-icons/fa";
 import { MdErrorOutline } from "react-icons/md";
 import { TrainBoard } from "../../components/Train/TrainBoard";
@@ -108,11 +102,11 @@ export const TrainBoardContainer: React.FC = () => {
 		try {
 			// 指定URLでAPIから到着列車データを取得
 			const response = await fetch(`${API_URL}/trains/arrivals/調布`, {
-				method: 'GET',
+				method: "GET",
 				headers: {
-					'Content-Type': 'application/json',
+					"Content-Type": "application/json",
 				},
-				mode: 'cors',
+				mode: "cors",
 			});
 
 			if (!response.ok) {
@@ -159,7 +153,7 @@ export const TrainBoardContainer: React.FC = () => {
 				return next;
 			});
 		}, 100);
-	}, [cooldownTotal, autoRefresh, fetchData]);
+	}, []);
 
 	// 自動更新のトグル
 	const toggleAutoRefresh = useCallback(() => {
@@ -261,6 +255,7 @@ export const TrainBoardContainer: React.FC = () => {
 				<MdErrorOutline size={48} />
 				<div className="text-lg font-medium">{error}</div>
 				<button
+					type="button"
 					onClick={() => fetchData()}
 					className="mt-4 px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-300 rounded-md transition-colors"
 				>
@@ -280,7 +275,7 @@ export const TrainBoardContainer: React.FC = () => {
 			<div className="bg-slate-900/80 backdrop-blur-sm p-2 rounded-lg ring-1 ring-cyan-500/20 shadow-md">
 				<div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 px-2">
 					<div className="text-sm text-cyan-400 font-medium flex items-center gap-2">
-						<span className="inline-block w-2 h-2 rounded-full bg-cyan-400"></span>
+						<span className="inline-block w-2 h-2 rounded-full bg-cyan-400" />
 						<span>リアルタイム列車情報</span>
 					</div>
 
@@ -310,8 +305,14 @@ export const TrainBoardContainer: React.FC = () => {
 						</div>
 
 						{/* 自動更新トグル */}
-						<div
+						<button
+							type="button"
 							onClick={toggleAutoRefresh}
+							onKeyDown={(e) => {
+								if (e.key === "Enter" || e.key === " ") {
+									toggleAutoRefresh();
+								}
+							}}
 							className={`flex items-center space-x-1 text-xs px-2 py-1 rounded cursor-pointer transition-colors ${
 								autoRefresh
 									? "bg-cyan-500/30 text-cyan-200"
@@ -330,12 +331,13 @@ export const TrainBoardContainer: React.FC = () => {
 											? "bg-cyan-200 transform translate-x-4"
 											: "bg-slate-400"
 									}`}
-								></div>
+								/>
 							</div>
-						</div>
+						</button>
 
 						{/* 更新ボタン */}
 						<button
+							type="button"
 							onClick={handleRefresh}
 							disabled={isRefreshing || cooldownProgress < 100}
 							className={`relative flex items-center justify-center p-1 rounded-full transition-all
