@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: "/api/proxy/:path*",
+        destination: "http://ok-train-api.akaaku.net/api/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;

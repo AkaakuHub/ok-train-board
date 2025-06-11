@@ -1,36 +1,130 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# OK Train Board
 
-## Getting Started
+**OK Train Board** は、電車の発車時刻、種別、行先などを美しいUIで表示するWebアプリケーションです。駅の発車標のような見た目で、リアルタイムな列車情報を確認できます。
 
-First, run the development server:
+## 🚅 特徴
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **モダンなデザイン**: ネオンカラーとグラスモーフィズムを採用したサイバーパンク風のUI
+- **レスポンシブ対応**: デスクトップ・タブレット・スマートフォンに対応
+- **リアルタイム更新**: 自動更新機能と手動更新機能を搭載
+- **列車種別別の色分け**: 特急、急行、快速などを視覚的に区別
+- **遅延情報**: 列車の遅延時間を表示
+- **通過情報**: 通過列車の表示
+
+## 🛠️ 技術スタック
+
+- **フレームワーク**: Next.js 15.3.2
+- **言語**: TypeScript
+- **スタイリング**: Tailwind CSS 4.1.6
+- **パッケージマネージャー**: pnpm
+- **アイコン**: React Icons
+
+## 📁 プロジェクト構成
+
+```
+src/
+├── app/                      # Next.js App Router
+│   ├── globals.css          # グローバルスタイル
+│   ├── layout.tsx           # ルートレイアウト
+│   ├── page.tsx             # メインページ
+│   └── welcome/             # ウェルカムページ
+├── components/              # Reactコンポーネント
+│   ├── Train/               # 列車関連コンポーネント
+│   │   ├── TrainBoard.tsx           # メインボードコンポーネント
+│   │   ├── TrainBoardHeader.tsx     # ヘッダー部分
+│   │   ├── TrainBoardControls.tsx   # 更新コントロール
+│   │   ├── TrainBoardGridHeader.tsx # グリッドヘッダー
+│   │   ├── TrainBoardFooter.tsx     # フッター部分
+│   │   ├── TrainList.tsx            # 列車リスト
+│   │   ├── TrainRow.tsx             # 個別の列車行
+│   │   ├── TrainTypeBadge.tsx       # 列車種別バッジ
+│   │   ├── TrainStatus.tsx          # 列車ステータス
+│   │   └── useTrainSorter.ts        # 列車ソート用カスタムフック
+│   └── UI/                  # 汎用UIコンポーネント
+│       └── CircleLoader.tsx # サークルローダー
+└── types/                   # TypeScript型定義
+    └── api.ts               # API関連の型定義
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 コンポーネント設計
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+このプロジェクトでは、**Single Responsibility Principle（単一責任の原則）** に基づいてコンポーネントを細かく分割しています：
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Train関連コンポーネント
 
-## Learn More
+- **TrainBoard**: メインのボードコンポーネント（統合）
+- **TrainBoardHeader**: タイトルと更新コントロールを含むヘッダー
+- **TrainBoardControls**: 自動更新トグルと手動更新ボタン
+- **TrainBoardGridHeader**: テーブルのヘッダー行
+- **TrainBoardFooter**: 最終更新時刻などのフッター情報
+- **TrainList**: 列車のリスト表示
+- **TrainRow**: 個別の列車情報行
+- **TrainTypeBadge**: 列車種別のカラフルなバッジ
+- **TrainStatus**: 通過・遅延情報の表示
 
-To learn more about Next.js, take a look at the following resources:
+### カスタムフック
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **useTrainSorter**: 列車データのソート・フィルタリングロジック
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🚀 開発・実行
 
-## Deploy on Vercel
+### 前提条件
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Node.js 18以上
+- pnpm
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### インストール
+
+```bash
+# リポジトリのクローン
+git clone <repository-url>
+cd ok-train-board
+
+# 依存関係のインストール
+pnpm install
+```
+
+### 開発サーバーの起動
+
+```bash
+pnpm dev
+```
+
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてアプリケーションを確認してください。
+
+### ビルド
+
+```bash
+# プロダクションビルド
+pnpm build
+
+# プロダクションサーバーの起動
+pnpm start
+```
+
+### リンティング
+
+```bash
+pnpm lint
+```
+
+## 🎯 主な機能
+
+### 列車情報表示
+- 発車時刻
+- 列車種別（特急、急行、快速など）
+- 行先
+- 遅延情報
+- 通過情報
+- 備考
+
+### 更新機能
+- 自動更新（ON/OFF切り替え可能）
+- 手動更新（クールダウン機能付き）
+- 更新状況の視覚的フィードバック
+
+### UI/UX
+- ダークテーマのサイバーパンク風デザイン
+- アニメーション効果
+- レスポンシブデザイン
+- アクセシビリティ対応
